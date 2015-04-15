@@ -1,0 +1,69 @@
+#USER_SIMPLSHARP_LIBRARY "Wink" 
+DIGITAL_INPUT GetDevices;
+DIGITAL_INPUT Get_Device_[10];
+DIGITAL_INPUT Load_On_[10];
+DIGITAL_INPUT Load_Off_[10];
+STRING_INPUT Username[64];
+STRING_INPUT Password[64];
+STRING_INPUT Client_ID[128];
+STRING_INPUT Client_Secret[128];
+STRING_INPUT Device_ID_[10][32];
+DIGITAL_OUTPUT Device_On_[10];
+DIGITAL_OUTPUT Device_Off_[10];
+
+
+
+WinkCommandProcessor myWinkCommandProcessor;
+
+string access_code[64];
+/*******************************************************************************************
+  Main()
+  Uncomment and place one-time startup code here
+  (This code will get called when the system starts up)
+*******************************************************************************************/
+PUSH GetDevices
+{
+       myWinkCommandProcessor.GetDevices(access_code);
+}
+
+PUSH Get_Device_
+{
+	string result[5];
+	result = myWinkCommandProcessor.getLightBulbState(access_code,Device_ID_[getlastmodifiedarrayindex()]);
+	if(result = "on")
+	{
+	    Device_On_[getlastmodifiedarrayindex()] = on;
+		Device_Off_[getlastmodifiedarrayindex()] = off;
+
+	}
+	else if(result = "off")
+	{
+    	Device_On_[getlastmodifiedarrayindex()] = off;
+    	Device_Off_[getlastmodifiedarrayindex()] = on;
+	}
+}
+
+Push Load_On_
+{
+	myWinkCommandProcessor.setLightBulbState(access_code,Device_ID_[getlastmodifiedarrayindex()],"true");
+    Device_On_[getlastmodifiedarrayindex()] = on;
+    Device_Off_[getlastmodifiedarrayindex()] = off;
+}
+
+
+Push Load_Off_
+{
+	myWinkCommandProcessor.setLightBulbState(access_code,Device_ID_[getlastmodifiedarrayindex()],"false");
+   	Device_On_[getlastmodifiedarrayindex()] = off;
+   	Device_Off_[getlastmodifiedarrayindex()] = on;
+}
+
+
+Function Main()
+{
+
+    WaitForInitializationComplete();
+	access_code = myWinkCommandProcessor.Authenticate(client_id,client_secret,username,password);
+}
+
+

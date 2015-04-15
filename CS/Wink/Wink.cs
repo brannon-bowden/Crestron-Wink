@@ -209,7 +209,7 @@ namespace Wink
                         if (str.Contains("{"))
                         {
                             string result = str.Substring(26, str.Length - 26);
-                            ErrorLog.Notice(result);
+                            //ErrorLog.Notice(result);
                             if (result == "false")
                             {
                                 return "off";
@@ -265,8 +265,8 @@ namespace Wink
             response = client.Dispatch(request);
             if (response.Code >= 200 && response.Code < 300)
             {
-                ErrorLog.Notice("Wink https response code: " + response.Code);
-                ErrorLog.Notice(response.ContentString.ToString() + "\n");                
+                //ErrorLog.Notice("Wink https response code: " + response.Code);
+                //ErrorLog.Notice(response.ContentString.ToString() + "\n");                
             }
             else
             {
